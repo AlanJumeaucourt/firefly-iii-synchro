@@ -9,27 +9,27 @@ This script provides an interface to interact with the Firefly III API. It inclu
 Functions
 ---------
 
-.. autofunction:: utils.get_local_transaction
+.. autofunction:: get_local_transaction
 
-.. autofunction:: utils.get_local_account
+.. autofunction:: get_local_account
 
-.. autofunction:: utils.check_missing_transactions
+.. autofunction:: check_missing_transactions
 
-.. autofunction:: utils.check_kresus_missing_transactions
+.. autofunction:: check_kresus_missing_transactions
 
-.. autofunction:: utils.add_missing_transactions
+.. autofunction:: add_missing_transactions
 
-.. autofunction:: utils.dump_transaction_to_csv
+.. autofunction:: dump_transaction_to_csv
 
-.. autofunction:: utils.dump_account_to_csv
+.. autofunction:: dump_account_to_csv
 
-.. autofunction:: utils.update_local_to_firefly
+.. autofunction:: update_local_to_firefly
 
-.. autofunction:: utils.update_kresus_to_firefly
+.. autofunction:: update_kresus_to_firefly
 
-.. autofunction:: utils.test_create_get_delete_fireflyapi
+.. autofunction:: test_create_get_delete_fireflyapi
 
-.. autofunction:: utils.check_kersus_firefly_accout
+.. autofunction:: check_kersus_firefly_accout
 
 Usage
 -----
