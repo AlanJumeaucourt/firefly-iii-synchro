@@ -10,19 +10,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v3
-      - name: install pandas via apt
-        run: |
-          sudo apt-get update
-          sudo apt-get install python3-pandas
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.12'
+      - name: Install latest pip
+        run: pip install --upgrade pip
+
+      - name: Cache pip packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
       - name: Install project dependencies
-        run: pip install -r requirements.txt
+        run: pip install --prefer-binary -r requirements.txt
+
       - name: Install Sphinx dependencies
         run: |
           pip install sphinx sphinx_rtd_theme myst_parser
+
       - name: Sphinx build
         run: |
           sphinx-build docs/source docs/build/html
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
