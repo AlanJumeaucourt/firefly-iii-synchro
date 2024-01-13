@@ -1,0 +1,7 @@
+python-dateutil~=2.7.0
+typing-extensions~=4.3.0
+fuzzywuzzy
+pandas
+python-Levenshtein
+openpyxl
+python-dotenv
