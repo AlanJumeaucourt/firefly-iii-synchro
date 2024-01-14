@@ -2,6 +2,8 @@
 
 This project provides a comprehensive Python-based solution for managing and synchronizing financial data between Kresus - a personal finance management tool, and Firefly III - an open-source personal finance manager. It's designed to streamline the process of financial data handling, offering seamless integration and data synchronization capabilities.
 
+A python documentaion is available [here](https://alanjumeaucourt.github.io/firefly-iii-synchro/)
+
 ## Features
 Firefly III API Integration: Utilizes a custom-built wrapper around the Firefly III API, enabling efficient interactions such as fetching, creating, updating, and deleting financial records.
 
