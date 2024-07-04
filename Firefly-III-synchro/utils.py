@@ -469,7 +469,7 @@ def test_create_get_delete_fireflyapi(firefly_api: FireflyIIIAPI):
         logger.info("Nouvelle transaction n'est plus dans la liste des transactions")
 
 
-def check_kersus_firefly_accout(firefly_api: FireflyIIIAPI, kresus: Kresus):
+def check_kresus_firefly_accout(firefly_api: FireflyIIIAPI, kresus: Kresus):
     """
     Compares account balances in Kresus with those in Firefly III.
 

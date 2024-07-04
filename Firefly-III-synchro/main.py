@@ -1,7 +1,7 @@
 import logging
 from firefly_api import FireflyIIIAPI
 from kresus import Kresus
-from utils import test_create_get_delete_fireflyapi, get_local_transaction, update_local_to_firefly, dump_transaction_to_csv, check_kersus_firefly_accout
+from utils import test_create_get_delete_fireflyapi, get_local_transaction, update_local_to_firefly, dump_transaction_to_csv, check_kresus_firefly_accout
 from logging_config import setup_logging
 from dotenv import load_dotenv
 import os
@@ -34,7 +34,7 @@ def main():
     # Initialize Kresus instance
     kresus = Kresus()
     kresus.get_all_kresus()
-    check_kersus_firefly_accout(firefly_api, kresus)
+    check_kresus_firefly_accout(firefly_api, kresus)
 
     # Sync data from Kresus to Firefly III
     kresus.parse_account()
