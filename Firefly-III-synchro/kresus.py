@@ -1,28 +1,46 @@
-import requests
 import logging
+from typing import List, Any
+import requests
 from datetime import datetime
-from models import Account, Transaction  # Assuming models.py is in the same directory
+from models import Account, Transaction
 import inspect
-from typing import List
 
 logger = logging.getLogger(__name__)
 
 
 class Kresus:
-    def __init__(self):
-        self.data = {}
+    def __init__(self, api_url) -> None:
+        self.data: Any = {}
         self.list_accounts_to_sync: list[Account] = []
         self.transaction_list: list[Transaction] = []
         logger.info("Kresus instance created")
+        self.api_url = api_url
 
     def get_all_kresus(self):
         function_name = inspect.currentframe().f_code.co_name
-        url = "http://192.168.1.46:8083/api/all/"
-        response = requests.get(url)
+        response = requests.get(self.api_url)
 
         if response.status_code == 200:
             logger.info("Request of all kresus data successfull")
             self.data = response.json()
+
+            # self.data format of list from kresus :
+            # [{
+            #     "type": "account-type.loan",      # account-type.checking, account-type.pea, account-type.market
+            #     "customLabel": None,
+            #     "iban": None,
+            #     "currency": "EUR",
+            #     "excludeFromBalance": False,
+            #     "balance": -10818.3,
+            #     "id": 10,
+            #     "userId": 1,
+            #     "accessId": 1,
+            #     "vendorAccountId": "10001710222",
+            #     "importDate": "2024-01-04T11:30:32.471Z",
+            #     "initialBalance": -12546.63,
+            #     "lastCheckDate": "2024-07-05T03:35:48.587Z",
+            #     "label": "Prêt etudiant",
+            # }]
 
         else:
             logger.error(
@@ -33,7 +51,7 @@ class Kresus:
             )
 
     def parse_account(self):
-        csv_accounts : list[str] = [
+        csv_accounts: list[str] = [
             "Crédit Agricole Courant",
             "Crédit Agricole LEP",
             "Crédit Agricole Livret Jeune",
@@ -65,6 +83,7 @@ class Kresus:
         account_excluded: List[str] = ["Boursorama CTO", "Boursorama PEA"]
 
         accounts = self.data["accounts"]
+        print(accounts)
         for account in accounts:
             # account format from kresus :
             # {'type': 'account-type.savings',
@@ -94,7 +113,7 @@ class Kresus:
             f"Number of account to synchronize from kresus : {len(self.list_accounts_to_sync)}"
         )
 
-    def parse_transactions(self, date: str = "2002-06-08"):
+    def parse_transactions(self, date):
         transactions = self.data["transactions"]
         for transaction in transactions:
             # transaction format from kresus :
@@ -141,12 +160,16 @@ class Kresus:
                     date=transaction["debitDate"][:10],
                     amount=abs(transaction["amount"]),
                     description=transaction["label"],
-                    source_name=get_account_name_from_id(transaction["accountId"])
-                    if transaction["amount"] < 0
-                    else "Fake Fake",
-                    destination_name=get_account_name_from_id(transaction["accountId"])
-                    if transaction["amount"] > 0
-                    else "Fake Fake",
+                    source_name=(
+                        get_account_name_from_id(transaction["accountId"])
+                        if transaction["amount"] < 0
+                        else "Fake Fake"
+                    ),
+                    destination_name=(
+                        get_account_name_from_id(transaction["accountId"])
+                        if transaction["amount"] > 0
+                        else "Fake Fake"
+                    ),
                     type=transaction_type,
                 )
 
@@ -166,6 +189,14 @@ class Kresus:
                         and transaction.destination_name
                         != potential_match.destination_name
                     ):
+                        if transaction.source_name == potential_match.destination_name:
+                            logger.warning(
+                                "Edge case while reconciliate transaction: transaction.source_name == potential_match.destination_name, skipping... Possible an aller-retour transaction in the same day. Will ignore both transactions."
+                            )
+                            self.transaction_list.remove(transaction)
+                            self.transaction_list.remove(potential_match)
+                            break
+
                         # Reconcile these transactions as a transfer
                         logger.info(
                             f"Reconciled: {transaction.description} with {potential_match.description}"

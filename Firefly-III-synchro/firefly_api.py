@@ -14,21 +14,21 @@ class FireflyIIIAPI:
     Provides methods to list, create, update, and delete accounts and transactions.
     """
 
-    def __init__(self, base_url: str, api_token: str):
+    def __init__(self, api_url: str, api_token: str):
         """
-        Initialize the FireflyIIIAPI instance with the Firefly III base URL and API token.
+        Initialize the FireflyIIIAPI instance with the Firefly III API URL and API token.
 
         Args:
-            base_url (str): The base URL of the Firefly III instance.
+            api_url (str): The API URL of the Firefly III instance.
             api_token (str): The API token for authenticating requests.
         """
-        self.base_url = base_url
+        self.api_url = api_url
         self.api_token = api_token
         self.headers = {
             "Authorization": f"Bearer {self.api_token}",
             "Content-Type": "application/json",
         }
-        logger.info(f"FireflyIIIAPI initialized with base URL {base_url}")
+        logger.info(f"FireflyIIIAPI initialized with API URL {api_url}")
 
     def get_about_info(self):
         """
@@ -37,7 +37,7 @@ class FireflyIIIAPI:
         Returns:
             dict: A dictionary containing about information if successful, else raises an exception.
         """
-        endpoint = f"{self.base_url}/about"
+        endpoint = f"{self.api_url}/about"
         try:
             response = requests.get(endpoint, headers=self.headers)
             if response.status_code == 200:
@@ -68,7 +68,7 @@ class FireflyIIIAPI:
         Returns:
             dict: A dictionary containing account data if successful, else raises an exception.
         """
-        endpoint = f"{self.base_url}/accounts"
+        endpoint = f"{self.api_url}/accounts"
         params = {"limit": limit, "page": page}
 
         if date:
@@ -223,7 +223,7 @@ class FireflyIIIAPI:
         Returns:
             dict: A dictionary containing transaction data if successful, else raises an exception.
         """
-        endpoint = f"{self.base_url}/transactions"
+        endpoint = f"{self.api_url}/transactions"
         params = {"limit": limit, "page": page}
 
         if start:
@@ -371,7 +371,7 @@ class FireflyIIIAPI:
         Returns:
             Transaction: The stored Transaction object if successful, else raises an exception.
         """
-        endpoint = f"{self.base_url}/transactions"
+        endpoint = f"{self.api_url}/transactions"
         headers = self.headers.copy()
 
         if trace_id:
@@ -403,7 +403,7 @@ class FireflyIIIAPI:
         Returns:
             Transaction: The requested Transaction object if found, else raises an exception.
         """
-        endpoint = f"{self.base_url}/transactions/{transaction_id}"
+        endpoint = f"{self.api_url}/transactions/{transaction_id}"
         headers = self.headers.copy()
 
         if trace_id:
@@ -434,7 +434,7 @@ class FireflyIIIAPI:
         Returns:
             str: A confirmation message if the transaction is successfully deleted, else raises an exception.
         """
-        endpoint = f"{self.base_url}/transactions/{transaction_id}"
+        endpoint = f"{self.api_url}/transactions/{transaction_id}"
         headers = self.headers.copy()
 
         if trace_id:
@@ -465,7 +465,7 @@ class FireflyIIIAPI:
         Returns:
             Account: The stored Account object if successful, else raises an exception.
         """
-        endpoint = f"{self.base_url}/accounts/store"
+        endpoint = f"{self.api_url}/accounts/store"
         headers = self.headers.copy()
 
         if trace_id:
@@ -498,7 +498,7 @@ class FireflyIIIAPI:
         Returns:
             Transaction: The updated Transaction object if successful, else raises an exception.
         """
-        endpoint = f"{self.base_url}/transactions/{transaction_id}"
+        endpoint = f"{self.api_url}/transactions/{transaction_id}"
         headers = self.headers
 
         try:
