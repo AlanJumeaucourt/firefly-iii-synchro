@@ -3,3 +3,4 @@ __pycache__/*
 myvenv*
 docs/build/*
 Firefly-III-synchro/__pycache__/*
+Firefly-III-synchro/.env
