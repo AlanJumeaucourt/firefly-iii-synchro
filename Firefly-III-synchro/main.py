@@ -159,9 +159,9 @@ async def main() -> None:
     for s in signals:
         loop.add_signal_handler(s, lambda s=s: asyncio.create_task(shutdown(s, loop)))
 
-    asyncio.create_task(periodic_fetch(sleep_time=30))
-    asyncio.create_task(periodic_post_missing_transactions(sleep_time=10))
-    asyncio.create_task(check_discord_reaction(sleep_time=10))
+    asyncio.create_task(periodic_fetch(sleep_time=30*60))
+    asyncio.create_task(periodic_post_missing_transactions(sleep_time=10*60))
+    asyncio.create_task(check_discord_reaction(sleep_time=10*60))
     await discord_bot.start()
 
 
