@@ -360,7 +360,6 @@ class FireflyIIIAPI:
         transactions_list.sort(key=lambda x: x.transaction_id)
         return transactions_list
 
-
     def put_transaction(self, transaction: Transaction):
         """
         Adds transactions to Firefly III.
@@ -395,7 +394,6 @@ class FireflyIIIAPI:
         }
         logger.info(transaction_data)
         self.store_transaction(transaction_data=transaction_data)
-
 
     def store_transaction(self, transaction_data, trace_id=None):
         """

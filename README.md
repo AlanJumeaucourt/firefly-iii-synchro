@@ -5,10 +5,11 @@ This project provides a comprehensive Python-based solution for managing and syn
 A python documentaion is available [here](https://alanjumeaucourt.github.io/firefly-iii-synchro/)
 
 ## Features
+
 Firefly III API Integration: Utilizes a custom-built wrapper around the Firefly III API, enabling efficient interactions such as fetching, creating, updating, and deleting financial records.
 
 - Kresus Data Processing: Handles data obtained from Kresus, effectively parsing and preparing it for synchronization with Firefly III.
-Kresus offer automatically synchro with a lots of bank accounts
+  Kresus offer automatically synchro with a lots of bank accounts
 
 - Data Synchronization: Offers functionalities to sync accounts and transactions from Kresus to Firefly III, ensuring data consistency across platforms.
 
@@ -27,4 +28,3 @@ The tool's main module orchestrates various components, including API interactio
 1. Clone the repository.
 1. Set up your .env file with necessary API keys and endpoints.
 1. build and lauch the container `docker build --pull --rm -f "Dockerfile" -t fireflyiiisynchro:latest "." && docker run -it fireflyiiisynchro`
-`

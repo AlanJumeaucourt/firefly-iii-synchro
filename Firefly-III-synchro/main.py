@@ -17,6 +17,7 @@ from discordbot import DiscordBot
 # Setup logging
 logger = logging.getLogger(__name__)
 from logging_config import setup_logging
+
 setup_logging()
 
 
@@ -95,9 +96,13 @@ async def fetch_missing_transactions(
     Returns:
         List[Transaction]: List of missing transactions.
     """
-    kresus_transactions = await asyncio.to_thread(kresus_api.list_transactions, start_date)
+    kresus_transactions = await asyncio.to_thread(
+        kresus_api.list_transactions, start_date
+    )
     firefly_transactions = await asyncio.to_thread(firefly_api.list_transactions)
-    missing_transactions = check_kresus_missing_transactions(kresus_transactions, firefly_transactions)
+    missing_transactions = check_kresus_missing_transactions(
+        kresus_transactions, firefly_transactions
+    )
     return missing_transactions
 
 
@@ -109,7 +114,9 @@ async def main() -> None:
     # Initialize APIs and Discord bot
     kresus_api = Kresus(config["kresus_api_url"])
     firefly_api = FireflyIIIAPI(config["firefly_api_url"], config["firefly_api_token"])
-    discord_bot = DiscordBot(config["discord_token"], config["discord_channel_id"], firefly_api)
+    discord_bot = DiscordBot(
+        config["discord_token"], config["discord_channel_id"], firefly_api
+    )
 
     async def periodic_fetch(sleep_time: int):
         while True:
