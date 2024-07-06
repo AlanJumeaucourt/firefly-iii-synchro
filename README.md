@@ -25,6 +25,6 @@ The tool's main module orchestrates various components, including API interactio
 ## Getting Started
 
 1. Clone the repository.
-1. Install required dependencies.
 1. Set up your .env file with necessary API keys and endpoints.
-1. Run the main script to start synchronizing your financial data.
+1. build and lauch the container `docker build --pull --rm -f "Dockerfile" -t fireflyiiisynchro:latest "." && docker run -it fireflyiiisynchro`
+`
