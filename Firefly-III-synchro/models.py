@@ -354,7 +354,7 @@ class Transaction:
         if self.transaction_id:
             return f"Transaction ID: {self.transaction_id:<5} Type: {str(self.transaction_type):<17} Amount: {str(self.amount) + str(self.currency_symbol)} Date: {str(self.date):<10} Description: {str(self.description):<30}"
         else:
-            return f"Type: {str(self.transaction_type):<10} Amount: {str(self.amount):<6} Date: {str(self.date):<10} Description: {str(self.description):<30}"
+            return f"| Type: {str(self.transaction_type):<10} Amount: {str(self.amount):<6} Date: {str(self.date):<10} Description: {str(self.description):<40} |"
 
     def __hash__(self):
         # Hash function combining hash of relevant attributes
