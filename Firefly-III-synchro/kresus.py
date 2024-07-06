@@ -83,7 +83,6 @@ class Kresus:
         account_excluded: List[str] = ["Boursorama CTO", "Boursorama PEA"]
 
         accounts = self.data["accounts"]
-        print(accounts)
         for account in accounts:
             # account format from kresus :
             # {'type': 'account-type.savings',
@@ -177,7 +176,7 @@ class Kresus:
 
         self.transaction_list.sort(key=lambda x: x.date)
 
-    def _reconciliate_transaction(self):
+    def reconciliate_transaction(self):
         for i, transaction in enumerate(self.transaction_list):
             if transaction.type == "withdrawal":
                 for j, potential_match in enumerate(self.transaction_list):
@@ -217,3 +216,10 @@ class Kresus:
                         self.transaction_list.append(transfer_transaction)
 
                         break
+
+    def list_transactions(self, start_date) -> List[Transaction]:
+        self.get_all_kresus()
+        self.parse_account()
+        self.parse_transactions(start_date)
+        self.reconciliate_transaction()
+        return self.transaction_list

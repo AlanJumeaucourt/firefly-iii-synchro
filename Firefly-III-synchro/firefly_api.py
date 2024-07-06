@@ -5,6 +5,8 @@ import concurrent.futures
 from models import Account, Transaction  # Assuming models.py is in the same directory
 from typing import List
 
+# pylint: disable=W1203 # logging format is not a constant string
+
 logger = logging.getLogger(__name__)
 
 
@@ -247,9 +249,7 @@ class FireflyIIIAPI:
             logger.error(
                 f"Failing to list transactions: {e} with status code {response.status_code} && {response.text}"
             )
-            raise Exception(
-                f"Failing to list transactions: {e} with status code {response.status_code} && {response.text}"
-            )
+            raise e
 
     def _process_list_transactions_response(self, response) -> List[Transaction]:
         """
@@ -359,6 +359,43 @@ class FireflyIIIAPI:
 
         transactions_list.sort(key=lambda x: x.transaction_id)
         return transactions_list
+
+
+    def put_transaction(self, transaction: Transaction):
+        """
+        Adds transactions to Firefly III.
+
+        Args:
+            transaction (List[Transaction]): A transactions to be added.
+        """
+
+        transaction_data = {
+            "apply_rules": True,
+            "fire_webhooks": True,
+            "transactions": [
+                {
+                    "type": transaction.type,
+                    "date": transaction.date.strftime("%Y-%m-%d"),
+                    "amount": str(transaction.amount),
+                    "description": str(transaction.description),
+                    "source_name": transaction.source_name,
+                    "destination_name": transaction.destination_name,
+                    "category_name": "",
+                    "interest_date": "",
+                    "book_date": "",
+                    "process_date": "",
+                    "due_date": "",
+                    "payment_date": "",
+                    "invoice_date": "",
+                    "internal_reference": "",
+                    "notes": "",
+                    "external_url": "",
+                }
+            ],
+        }
+        logger.info(transaction_data)
+        self.store_transaction(transaction_data=transaction_data)
+
 
     def store_transaction(self, transaction_data, trace_id=None):
         """

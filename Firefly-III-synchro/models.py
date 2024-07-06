@@ -354,7 +354,7 @@ class Transaction:
         if self.transaction_id:
             return f"Transaction ID: {self.transaction_id:<5} Type: {str(self.transaction_type):<17} Amount: {str(self.amount) + str(self.currency_symbol)} Date: {str(self.date):<10} Description: {str(self.description):<30}"
         else:
-            return f"Type: {str(self.transaction_type):<17} Amount: {str(self.amount) + str(self.currency_symbol)} Date: {str(self.date):<10} Description: {str(self.description):<30}"
+            return f"Type: {str(self.transaction_type):<10} Amount: {str(self.amount):<6} Date: {str(self.date):<10} Description: {str(self.description):<30}"
 
     def __hash__(self):
         # Hash function combining hash of relevant attributes
@@ -389,7 +389,7 @@ class Transaction:
             "".join(description.split()).replace("PAIEMENTPARCARTE", "")
         ).replace("AVOIR CARTE", "")
 
-    def _compare_descriptions(self, other: "Transaction", threshold: int = 95):
+    def compare_descriptions(self, other: "Transaction", threshold: int = 95):
         self_desc = self._cleaned_description(str(self.description))
         other_desc = self._cleaned_description(str(other.description))
 
@@ -409,7 +409,7 @@ class Transaction:
             ):
                 return False
 
-            if not self._compare_descriptions(other):
+            if not self.compare_descriptions(other):
                 logger.debug(
                     f"Type: {self.type} == {other.type}: {self.type == other.type}"
                 )
