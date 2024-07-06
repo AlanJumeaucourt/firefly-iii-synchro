@@ -111,7 +111,7 @@ async def main() -> None:
     firefly_api = FireflyIIIAPI(config["firefly_api_url"], config["firefly_api_token"])
     discord_bot = DiscordBot(config["discord_token"], config["discord_channel_id"], firefly_api)
 
-    async def periodic_fetch():
+    async def periodic_fetch(sleep_time: int):
         while True:
             try:
                 missing_transactions = await fetch_missing_transactions(
@@ -121,23 +121,23 @@ async def main() -> None:
                 logger.info(f"Found {len(missing_transactions)} missing transactions.")
             except Exception as e:
                 logger.error(f"Error fetching missing transactions: {e}")
-            await asyncio.sleep(30)
+            await asyncio.sleep(sleep_time)
 
-    async def periodic_post_missing_transactions():
+    async def periodic_post_missing_transactions(sleep_time: int):
         while True:
             try:
                 await discord_bot.post_missing_transactions()
             except Exception as e:
                 logger.error(f"Error posting missing transactions: {e}")
-            await asyncio.sleep(10)
+            await asyncio.sleep(sleep_time)
 
-    async def check_discord_reaction():
+    async def check_discord_reaction(sleep_time: int):
         while True:
             try:
                 await discord_bot.check_reaction()
             except Exception as e:
                 logger.error(f"Error checking reactions: {e}")
-            await asyncio.sleep(10)
+            await asyncio.sleep(sleep_time)
 
     async def shutdown(signal, loop):
         logger.info(f"Received exit signal {signal.name}...")
@@ -152,9 +152,9 @@ async def main() -> None:
     for s in signals:
         loop.add_signal_handler(s, lambda s=s: asyncio.create_task(shutdown(s, loop)))
 
-    asyncio.create_task(periodic_fetch())
-    asyncio.create_task(periodic_post_missing_transactions())
-    asyncio.create_task(check_discord_reaction())
+    asyncio.create_task(periodic_fetch(sleep_time=30))
+    asyncio.create_task(periodic_post_missing_transactions(sleep_time=10))
+    asyncio.create_task(check_discord_reaction(sleep_time=10))
     await discord_bot.start()
 
 
