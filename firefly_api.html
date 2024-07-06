@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Firefly III API Wrapper &#8212; Firefly-III-synchro  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Kresus Integration" href="kresus.html" />
+    <link rel="prev" title="Firefly III API Script" href="utils.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="firefly-iii-api-wrapper">
+<span id="firefly-api"></span><h1>Firefly III API Wrapper<a class="headerlink" href="#firefly-iii-api-wrapper" title="Link to this heading">¶</a></h1>
+<p>The <cite>firefly_api</cite> module provides a Python wrapper for the Firefly III API, encapsulating all the interactions with the Firefly III server. This includes functionalities for managing accounts, transactions, and other related data.</p>
+<section id="fireflyiiiapi-class">
+<h2>FireflyIIIAPI Class<a class="headerlink" href="#fireflyiiiapi-class" title="Link to this heading">¶</a></h2>
+<p>The <cite>FireflyIIIAPI</cite> class is the core of the <cite>firefly_api</cite> module. It offers various methods to interact with the Firefly III API, such as retrieving account information, listing transactions, and updating data on the server.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="firefly_api.FireflyIIIAPI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">firefly_api.</span></span><span class="sig-name descname"><span class="pre">FireflyIIIAPI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#firefly_api.FireflyIIIAPI" title="Link to this definition">¶</a></dt>
+<dd><p>A wrapper class for interacting with the Firefly III API.
+Provides methods to list, create, update, and delete accounts and transactions.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="firefly_api.FireflyIIIAPI.delete_transaction">
+<span class="sig-name descname"><span class="pre">delete_transaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transaction_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trace_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#firefly_api.FireflyIIIAPI.delete_transaction" title="Link to this definition">¶</a></dt>
+<dd><p>Deletes a specific transaction by its ID from the Firefly III instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transaction_id</strong> (<em>int</em>) – The ID of the transaction to delete.</p></li>
+<li><p><strong>trace_id</strong> (<em>str</em><em>, </em><em>optional</em>) – Trace ID for the request.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A confirmation message if the transaction is successfully deleted, else raises an exception.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="firefly_api.FireflyIIIAPI.get_about_info">
+<span class="sig-name descname"><span class="pre">get_about_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#firefly_api.FireflyIIIAPI.get_about_info" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves information about the Firefly III instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary containing about information if successful, else raises an exception.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="firefly_api.FireflyIIIAPI.get_transaction">
+<span class="sig-name descname"><span class="pre">get_transaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transaction_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trace_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#firefly_api.FireflyIIIAPI.get_transaction" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a specific transaction by its ID from the Firefly III instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transaction_id</strong> (<em>int</em>) – The ID of the transaction to retrieve.</p></li>
+<li><p><strong>trace_id</strong> (<em>str</em><em>, </em><em>optional</em>) – Trace ID for the request.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The requested Transaction object if found, else raises an exception.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="models.html#models.Transaction" title="models.Transaction">Transaction</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="firefly_api.FireflyIIIAPI.list_accounts">
+<span class="sig-name descname"><span class="pre">list_accounts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">account_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="models.html#models.Account" title="models.Account"><span class="pre">Account</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#firefly_api.FireflyIIIAPI.list_accounts" title="Link to this definition">¶</a></dt>
+<dd><p>Lists accounts from the Firefly III instance with optional filtering.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>date</strong> (<em>str</em><em>, </em><em>optional</em>) – Date filter for accounts.</p></li>
+<li><p><strong>account_type</strong> (<em>str</em><em>, </em><em>optional</em>) – Type of accounts to filter.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of Account objects.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="models.html#models.Account" title="models.Account">Account</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="firefly_api.FireflyIIIAPI.list_transactions">
+<span class="sig-name descname"><span class="pre">list_transactions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transaction_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="models.html#models.Transaction" title="models.Transaction"><span class="pre">Transaction</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#firefly_api.FireflyIIIAPI.list_transactions" title="Link to this definition">¶</a></dt>
+<dd><p>Lists transactions from the Firefly III instance with optional filtering.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<em>str</em><em>, </em><em>optional</em>) – Start date for filtering transactions.</p></li>
+<li><p><strong>end</strong> (<em>str</em><em>, </em><em>optional</em>) – End date for filtering transactions.</p></li>
+<li><p><strong>transaction_type</strong> (<em>str</em><em>, </em><em>optional</em>) – Type of transactions to filter.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of Transaction objects.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="models.html#models.Transaction" title="models.Transaction">Transaction</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="firefly_api.FireflyIIIAPI.put_transaction">
+<span class="sig-name descname"><span class="pre">put_transaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transaction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="models.html#models.Transaction" title="models.Transaction"><span class="pre">Transaction</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#firefly_api.FireflyIIIAPI.put_transaction" title="Link to this definition">¶</a></dt>
+<dd><p>Adds transactions to Firefly III.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>transaction</strong> (<em>List</em><em>[</em><a class="reference internal" href="models.html#models.Transaction" title="models.Transaction"><em>Transaction</em></a><em>]</em>) – A transactions to be added.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="firefly_api.FireflyIIIAPI.store_account">
+<span class="sig-name descname"><span class="pre">store_account</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trace_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#firefly_api.FireflyIIIAPI.store_account" title="Link to this definition">¶</a></dt>
+<dd><p>Stores a new account in the Firefly III instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>account_data</strong> (<em>dict</em>) – Data of the account to be stored.</p></li>
+<li><p><strong>trace_id</strong> (<em>str</em><em>, </em><em>optional</em>) – Trace ID for the request.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The stored Account object if successful, else raises an exception.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="models.html#models.Account" title="models.Account">Account</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="firefly_api.FireflyIIIAPI.store_transaction">
+<span class="sig-name descname"><span class="pre">store_transaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transaction_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trace_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#firefly_api.FireflyIIIAPI.store_transaction" title="Link to this definition">¶</a></dt>
+<dd><p>Stores a new transaction in the Firefly III instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transaction_data</strong> (<em>dict</em>) – Data of the transaction to be stored.</p></li>
+<li><p><strong>trace_id</strong> (<em>str</em><em>, </em><em>optional</em>) – Trace ID for the request.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The stored Transaction object if successful, else raises an exception.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="models.html#models.Transaction" title="models.Transaction">Transaction</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="firefly_api.FireflyIIIAPI.update_transaction">
+<span class="sig-name descname"><span class="pre">update_transaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transaction_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updated_transaction_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#firefly_api.FireflyIIIAPI.update_transaction" title="Link to this definition">¶</a></dt>
+<dd><p>Updates a specific transaction by its ID in the Firefly III instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transaction_id</strong> (<em>int</em>) – The ID of the transaction to update.</p></li>
+<li><p><strong>updated_transaction_data</strong> (<em>dict</em>) – The new data for updating the transaction.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The updated Transaction object if successful, else raises an exception.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="models.html#models.Transaction" title="models.Transaction">Transaction</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
+<p>To use the <cite>FireflyIIIAPI</cite> class, initialize it with the base URL of your Firefly III instance and the API token. Once initialized, you can call its methods to perform various operations with the Firefly III server.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">firefly_api</span> <span class="kn">import</span> <span class="n">FireflyIIIAPI</span>
+
+<span class="c1"># Initialize the API wrapper</span>
+<span class="n">api</span> <span class="o">=</span> <span class="n">FireflyIIIAPI</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-firefly-instance.com/api/v1&quot;</span><span class="p">,</span> <span class="n">api_token</span><span class="o">=</span><span class="s2">&quot;your_api_token&quot;</span><span class="p">)</span>
+
+<span class="c1"># Fetching account data</span>
+<span class="n">accounts</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">list_accounts</span><span class="p">()</span>
+
+<span class="c1"># Listing transactions for a specific period</span>
+<span class="n">transactions</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">list_transactions</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="s2">&quot;2024-01-01&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2024-01-31&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This setup allows for seamless integration with Firefly III, enabling the application to manage financial data effectively.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Firefly-III-synchro</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Firefly-III-synchro</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="main.html">Main script</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Firefly III API Script</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Firefly III API Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kresus.html">Kresus Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">Data Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logging_config.html">Logging Configuration</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">Firefly-III-synchro</a><ul>
+      <li>Previous: <a href="utils.html" title="previous chapter">Firefly III API Script</a></li>
+      <li>Next: <a href="kresus.html" title="next chapter">Kresus Integration</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Alan.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/firefly_api.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

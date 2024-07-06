@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Firefly-III-synchro &#8212; Firefly-III-synchro  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Main script" href="main.html" />
+    <link rel="prev" title="Welcome to the Firefly III Synchronization Tool’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="firefly-iii-synchro">
+<h1>Firefly-III-synchro<a class="headerlink" href="#firefly-iii-synchro" title="Link to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="main.html">Main script</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="main.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html#workflow">Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html#example-usage">Example Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html#note">Note</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Firefly III API Script</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#note">Note</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="firefly_api.html">Firefly III API Wrapper</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="firefly_api.html#fireflyiiiapi-class">FireflyIIIAPI Class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="firefly_api.html#firefly_api.FireflyIIIAPI"><code class="docutils literal notranslate"><span class="pre">FireflyIIIAPI</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="firefly_api.html#firefly_api.FireflyIIIAPI.delete_transaction"><code class="docutils literal notranslate"><span class="pre">FireflyIIIAPI.delete_transaction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="firefly_api.html#firefly_api.FireflyIIIAPI.get_about_info"><code class="docutils literal notranslate"><span class="pre">FireflyIIIAPI.get_about_info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="firefly_api.html#firefly_api.FireflyIIIAPI.get_transaction"><code class="docutils literal notranslate"><span class="pre">FireflyIIIAPI.get_transaction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="firefly_api.html#firefly_api.FireflyIIIAPI.list_accounts"><code class="docutils literal notranslate"><span class="pre">FireflyIIIAPI.list_accounts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="firefly_api.html#firefly_api.FireflyIIIAPI.list_transactions"><code class="docutils literal notranslate"><span class="pre">FireflyIIIAPI.list_transactions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="firefly_api.html#firefly_api.FireflyIIIAPI.put_transaction"><code class="docutils literal notranslate"><span class="pre">FireflyIIIAPI.put_transaction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="firefly_api.html#firefly_api.FireflyIIIAPI.store_account"><code class="docutils literal notranslate"><span class="pre">FireflyIIIAPI.store_account()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="firefly_api.html#firefly_api.FireflyIIIAPI.store_transaction"><code class="docutils literal notranslate"><span class="pre">FireflyIIIAPI.store_transaction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="firefly_api.html#firefly_api.FireflyIIIAPI.update_transaction"><code class="docutils literal notranslate"><span class="pre">FireflyIIIAPI.update_transaction()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="firefly_api.html#usage">Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="kresus.html">Kresus Integration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="kresus.html#kresus-class">Kresus Class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="kresus.html#kresus.Kresus"><code class="docutils literal notranslate"><span class="pre">Kresus</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="kresus.html#usage">Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">Data Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="models.html#account">Account</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="models.html#models.Account"><code class="docutils literal notranslate"><span class="pre">Account</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.name"><code class="docutils literal notranslate"><span class="pre">Account.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.account_type"><code class="docutils literal notranslate"><span class="pre">Account.account_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.account_id"><code class="docutils literal notranslate"><span class="pre">Account.account_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.created_at"><code class="docutils literal notranslate"><span class="pre">Account.created_at</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.updated_at"><code class="docutils literal notranslate"><span class="pre">Account.updated_at</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.active"><code class="docutils literal notranslate"><span class="pre">Account.active</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.order"><code class="docutils literal notranslate"><span class="pre">Account.order</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.currency_code"><code class="docutils literal notranslate"><span class="pre">Account.currency_code</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.currency_symbol"><code class="docutils literal notranslate"><span class="pre">Account.currency_symbol</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.currency_decimal_places"><code class="docutils literal notranslate"><span class="pre">Account.currency_decimal_places</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.current_balance"><code class="docutils literal notranslate"><span class="pre">Account.current_balance</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.current_balance_date"><code class="docutils literal notranslate"><span class="pre">Account.current_balance_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.notes"><code class="docutils literal notranslate"><span class="pre">Account.notes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.monthly_payment_date"><code class="docutils literal notranslate"><span class="pre">Account.monthly_payment_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.credit_card_type"><code class="docutils literal notranslate"><span class="pre">Account.credit_card_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.account_number"><code class="docutils literal notranslate"><span class="pre">Account.account_number</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.iban"><code class="docutils literal notranslate"><span class="pre">Account.iban</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.bic"><code class="docutils literal notranslate"><span class="pre">Account.bic</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.virtual_balance"><code class="docutils literal notranslate"><span class="pre">Account.virtual_balance</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.opening_balance"><code class="docutils literal notranslate"><span class="pre">Account.opening_balance</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.opening_balance_date"><code class="docutils literal notranslate"><span class="pre">Account.opening_balance_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.liability_type"><code class="docutils literal notranslate"><span class="pre">Account.liability_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.liability_direction"><code class="docutils literal notranslate"><span class="pre">Account.liability_direction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.interest"><code class="docutils literal notranslate"><span class="pre">Account.interest</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.interest_period"><code class="docutils literal notranslate"><span class="pre">Account.interest_period</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.current_debt"><code class="docutils literal notranslate"><span class="pre">Account.current_debt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.include_net_worth"><code class="docutils literal notranslate"><span class="pre">Account.include_net_worth</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.longitude"><code class="docutils literal notranslate"><span class="pre">Account.longitude</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.latitude"><code class="docutils literal notranslate"><span class="pre">Account.latitude</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Account.zoom_level"><code class="docutils literal notranslate"><span class="pre">Account.zoom_level</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#transaction">Transaction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="models.html#models.Transaction"><code class="docutils literal notranslate"><span class="pre">Transaction</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Transaction.transaction_id"><code class="docutils literal notranslate"><span class="pre">Transaction.transaction_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Transaction.amount"><code class="docutils literal notranslate"><span class="pre">Transaction.amount</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Transaction.type"><code class="docutils literal notranslate"><span class="pre">Transaction.type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Transaction.description"><code class="docutils literal notranslate"><span class="pre">Transaction.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Transaction.date"><code class="docutils literal notranslate"><span class="pre">Transaction.date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Transaction.__str__"><code class="docutils literal notranslate"><span class="pre">Transaction.__str__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Transaction.__hash__"><code class="docutils literal notranslate"><span class="pre">Transaction.__hash__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Transaction.custom_normalized_score"><code class="docutils literal notranslate"><span class="pre">Transaction.custom_normalized_score()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Transaction._rm_date"><code class="docutils literal notranslate"><span class="pre">Transaction._rm_date()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Transaction._cleaned_description"><code class="docutils literal notranslate"><span class="pre">Transaction._cleaned_description()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Transaction._compare_descriptions"><code class="docutils literal notranslate"><span class="pre">Transaction._compare_descriptions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Transaction.__eq__"><code class="docutils literal notranslate"><span class="pre">Transaction.__eq__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#usage">Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="logging_config.html">Logging Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="logging_config.html#customformatter">CustomFormatter</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="logging_config.html#logging_config.CustomFormatter"><code class="docutils literal notranslate"><span class="pre">CustomFormatter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="logging_config.html#logging_config.CustomFormatter.format"><code class="docutils literal notranslate"><span class="pre">CustomFormatter.format()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="logging_config.html#setup-logging">setup_logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="logging_config.html#logging_config.setup_logging"><code class="docutils literal notranslate"><span class="pre">setup_logging()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="logging_config.html#usage">Usage</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Firefly-III-synchro</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Firefly-III-synchro</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="main.html">Main script</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Firefly III API Script</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firefly_api.html">Firefly III API Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kresus.html">Kresus Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">Data Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logging_config.html">Logging Configuration</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to the Firefly III Synchronization Tool’s documentation!</a></li>
+      <li>Next: <a href="main.html" title="next chapter">Main script</a></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Alan.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/modules.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
