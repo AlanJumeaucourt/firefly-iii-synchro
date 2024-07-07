@@ -7,49 +7,6 @@ import re
 
 logger = logging.getLogger(__name__)
 
-@dataclass
-class Account:
-    name: str
-    account_type: str = "asset"
-    account_id: Optional[int] = None
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
-    active: bool = True
-    order: Optional[int] = None
-    currency_code: Optional[str] = None
-    currency_symbol: Optional[str] = None
-    currency_decimal_places: Optional[int] = None
-    current_balance: float = 0.0
-    current_balance_date: Optional[str] = None
-    notes: Optional[str] = None
-    monthly_payment_date: Optional[str] = None
-    credit_card_type: Optional[str] = None
-    account_number: Optional[str] = None
-    iban: Optional[str] = None
-    bic: Optional[str] = None
-    virtual_balance: Optional[float] = None
-    opening_balance: Optional[float] = None
-    opening_balance_date: Optional[str] = None
-    liability_type: Optional[str] = None
-    liability_direction: Optional[str] = None
-    interest: Optional[float] = None
-    interest_period: Optional[str] = None
-    current_debt: Optional[float] = None
-    include_net_worth: bool = True
-    longitude: Optional[float] = None
-    latitude: Optional[float] = None
-    zoom_level: Optional[int] = None
-
-    def __str__(self) -> str:
-        return f"Account {self.account_type:<17} Name: {self.name:<30}"
-
-    def __hash__(self) -> int:
-        return hash((self.account_type, self.name))
-
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, Account):
-            return False
-        return self.__hash__() == other.__hash__()
 
 @dataclass
 class Transaction:
@@ -132,7 +89,15 @@ class Transaction:
             return f"| Type: {self.type:<10} Amount: {self.amount:<6} Date: {self.date!s:<10} Description: {self.description:<40} |"
 
     def __hash__(self) -> int:
-        return hash((self.type, round(self.amount, 2), self.date, self.source_name, self.destination_name))
+        return hash(
+            (
+                self.type,
+                round(self.amount, 2),
+                self.date,
+                self.source_name,
+                self.destination_name,
+            )
+        )
 
     @staticmethod
     def custom_normalized_score(str1: str, str2: str) -> float:
@@ -147,9 +112,11 @@ class Transaction:
         return re.sub(pattern, r"\1", input_string)
 
     def _cleaned_description(self) -> str:
-        return self._rm_date("".join(self.description.split()).replace("PAIEMENTPARCARTE", "")).replace("AVOIR CARTE", "")
+        return self._rm_date(
+            "".join(self.description.split()).replace("PAIEMENTPARCARTE", "")
+        ).replace("AVOIR CARTE", "")
 
-    def compare_descriptions(self, other: 'Transaction', threshold: int = 95) -> bool:
+    def compare_descriptions(self, other: "Transaction", threshold: int = 95) -> bool:
         self_desc = self._cleaned_description()
         other_desc = other._cleaned_description()
 
@@ -164,16 +131,24 @@ class Transaction:
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Transaction):
             return False
-        
+
         if self.date != other.date or not abs(self.amount - other.amount) < 0.01:
             return False
 
         if not self.compare_descriptions(other):
-            logger.debug(f"Type: {self.type} == {other.type}: {self.type == other.type}")
-            logger.debug(f"Amount: {self.amount} ~ {other.amount}: {abs(self.amount - other.amount) < 0.01}")
+            logger.debug(
+                f"Type: {self.type} == {other.type}: {self.type == other.type}"
+            )
+            logger.debug(
+                f"Amount: {self.amount} ~ {other.amount}: {abs(self.amount - other.amount) < 0.01}"
+            )
             logger.debug(f"Date: {self.date} == {other.date}")
-            logger.debug(f"Source: {self.source_name} == {other.source_name}: {self.source_name == other.source_name}")
-            logger.debug(f"Destination: {self.destination_name} == {other.destination_name}: {self.destination_name == other.destination_name}")
+            logger.debug(
+                f"Source: {self.source_name} == {other.source_name}: {self.source_name == other.source_name}"
+            )
+            logger.debug(
+                f"Destination: {self.destination_name} == {other.destination_name}: {self.destination_name == other.destination_name}"
+            )
             return False
 
         return self.__hash__() == other.__hash__()

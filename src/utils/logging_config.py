@@ -4,18 +4,20 @@ from typing import Dict, Any, List
 from functools import lru_cache
 import os
 
+
 class ColorFormatter(logging.Formatter):
     """
     Custom color formatter for logging, providing a more detailed and colorful log format.
     """
+
     COLORS = {
-        'DEBUG': '\033[94m',  # Light Blue
-        'INFO': '\033[92m',   # Light Green
-        'WARNING': '\033[93m', # Yellow
-        'ERROR': '\033[91m',  # Light Red
-        'CRITICAL': '\033[1;91m', # Bold Red
+        "DEBUG": "\033[94m",  # Light Blue
+        "INFO": "\033[92m",  # Light Green
+        "WARNING": "\033[93m",  # Yellow
+        "ERROR": "\033[91m",  # Light Red
+        "CRITICAL": "\033[1;91m",  # Bold Red
     }
-    RESET = '\033[0m'
+    RESET = "\033[0m"
 
     def __init__(self, fmt: str):
         super().__init__(fmt)
@@ -40,10 +42,11 @@ class ColorFormatter(logging.Formatter):
             function_name = stack[8].function
         return function_name
 
+
 def setup_logging(
     level: int = logging.INFO,
     log_file: str = None,
-    format_string: str = "%(asctime)s - %(name)s - %(levelname)s - %(funcName)s - %(message)s"
+    format_string: str = "%(asctime)s - %(name)s - %(levelname)s - %(funcName)s - %(message)s",
 ) -> None:
     """
     Set up logging configuration.
@@ -75,6 +78,7 @@ def setup_logging(
     # Disable propagation to prevent duplicate logs
     logging.getLogger().propagate = False
 
+
 def get_logger(name: str) -> logging.Logger:
     """
     Get a logger with the specified name.
@@ -86,6 +90,7 @@ def get_logger(name: str) -> logging.Logger:
         logging.Logger: A configured logger instance.
     """
     return logging.getLogger(name)
+
 
 # Example usage
 if __name__ == "__main__":

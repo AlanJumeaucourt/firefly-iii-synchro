@@ -1,16 +1,17 @@
-
 import asyncio
 import logging
 from typing import List, Optional
 from discord.ext import commands
 import discord
-from discord import Intents, Message, Reaction, User, TextChannel, Embed, Member
+from discord import Intents, Message, User, TextChannel, Embed, Member
 from models import Transaction
 import json
 import hashlib
-from firefly_api import FireflyIIIAPI
+from api import FireflyIIIAPI
+
 
 logger = logging.getLogger(__name__)
+
 
 class DiscordBot:
     def __init__(self, token: str, channel_id: int, firefly_api: FireflyIIIAPI):
@@ -33,7 +34,9 @@ class DiscordBot:
         self.channel = self.bot.get_channel(self.channel_id)
 
         if not self.channel:
-            logger.error(f"Failed to find channel with ID {self.channel_id}. Bot may not have access.")
+            logger.error(
+                f"Failed to find channel with ID {self.channel_id}. Bot may not have access."
+            )
             return
 
         logger.info(f"Bot connected to channel: {self.channel.name}")
@@ -56,20 +59,24 @@ class DiscordBot:
         user = self.bot.get_user(payload.user_id)
         if user is None:
             user = await self.bot.fetch_user(payload.user_id)
-        
+
         if user is None:
             logger.error(f"Failed to find user with ID {payload.user_id}")
             return
 
         await self.handle_reaction(message, payload.emoji, user)
 
-    async def handle_reaction(self, message: Message, emoji: discord.PartialEmoji, user: User | Member):
+    async def handle_reaction(
+        self, message: Message, emoji: discord.PartialEmoji, user: User | Member
+    ):
         logger.info(f"Reaction {emoji} added by {user.name} on message {message.id}.")
-        
-        if (user.id != self.bot.user.id and
-            str(emoji) == "➕" and
-            message.author == self.bot.user and
-            "🔄" not in [str(r.emoji) for r in message.reactions]):
+
+        if (
+            user.id != self.bot.user.id
+            and str(emoji) == "➕"
+            and message.author == self.bot.user
+            and "🔄" not in [str(r.emoji) for r in message.reactions]
+        ):
 
             await message.add_reaction("🔄")
 
@@ -100,7 +107,9 @@ class DiscordBot:
         async for message in self.channel.history(limit=200):
             for reaction in message.reactions:
                 if str(reaction.emoji) == "➕" and not reaction.me:
-                    await self.handle_reaction(message, reaction.emoji, reaction.message.author)
+                    await self.handle_reaction(
+                        message, reaction.emoji, reaction.message.author
+                    )
 
     async def post_missing_transactions(self):
         if self.channel is None:
@@ -110,7 +119,9 @@ class DiscordBot:
         logger.info("Start posting missing transactions...")
 
         for transaction in self.missing_transactions:
-            if not await self.is_transaction_posted(self.channel, self.sha256_transaction(transaction)):
+            if not await self.is_transaction_posted(
+                self.channel, self.sha256_transaction(transaction)
+            ):
                 embed = self.format_transaction_embedded(transaction)
                 message = await self.channel.send(embed=embed)
                 await message.add_reaction("➕")
@@ -127,8 +138,13 @@ class DiscordBot:
             if field.name == "Sha256":
                 transaction_sha256 = field.value
                 for missing_transaction in self.missing_transactions:
-                    if self.sha256_transaction(missing_transaction) == transaction_sha256:
-                        logger.info(f"Transaction {missing_transaction} found from message.")
+                    if (
+                        self.sha256_transaction(missing_transaction)
+                        == transaction_sha256
+                    ):
+                        logger.info(
+                            f"Transaction {missing_transaction} found from message."
+                        )
                         return missing_transaction
         return None
 
@@ -141,10 +157,16 @@ class DiscordBot:
 
     @staticmethod
     def sha256_transaction(transaction: Transaction) -> str:
-        return hashlib.sha256(json.dumps(transaction.__dict__, indent=4, sort_keys=True, default=str).encode()).hexdigest()
+        return hashlib.sha256(
+            json.dumps(
+                transaction.__dict__, indent=4, sort_keys=True, default=str
+            ).encode()
+        ).hexdigest()
 
     @staticmethod
-    async def is_transaction_posted(channel: TextChannel, transaction_sha256: str) -> bool:
+    async def is_transaction_posted(
+        channel: TextChannel, transaction_sha256: str
+    ) -> bool:
         async for message in channel.history(limit=200):
             for embed in message.embeds:
                 for field in embed.fields:
@@ -155,27 +177,37 @@ class DiscordBot:
     @staticmethod
     def format_transaction_embedded(transaction: Transaction) -> Embed:
         embed = Embed(title="Missing transaction", color=discord.Colour.orange())
-        embed.add_field(name="Sha256", value=DiscordBot.sha256_transaction(transaction), inline=False)
+        embed.add_field(
+            name="Sha256",
+            value=DiscordBot.sha256_transaction(transaction),
+            inline=False,
+        )
         embed.add_field(name="Date", value=transaction.date, inline=False)
         embed.add_field(name="Amount", value=transaction.amount, inline=False)
         embed.add_field(name="Type", value=transaction.type, inline=False)
         embed.add_field(name="Description", value=transaction.description, inline=False)
         embed.add_field(name="Source", value=transaction.source_name, inline=False)
-        embed.add_field(name="Destination", value=transaction.destination_name, inline=False)
+        embed.add_field(
+            name="Destination", value=transaction.destination_name, inline=False
+        )
         return embed
+
 
 # Usage example
 async def main():
     token = "your_discord_token"
     channel_id = 123456789  # Replace with your channel ID
-    firefly_api = FireflyIIIAPI("https://your-firefly-instance.com/api", "your-api-token")
-    
+    firefly_api = FireflyIIIAPI(
+        "https://your-firefly-instance.com/api", "your-api-token"
+    )
+
     bot = DiscordBot(token, channel_id, firefly_api)
-    
+
     try:
         await bot.start()
     except KeyboardInterrupt:
         await bot.stop()
+
 
 if __name__ == "__main__":
     asyncio.run(main())
