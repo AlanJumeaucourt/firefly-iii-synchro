@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import asyncio
 from dataclasses import dataclass
-from typing import List, Dict, Any, Optional
-from datetime import datetime
+from typing import List, Dict, Any, Optional, AsyncGenerator
+from datetime import datetime, date
 import aiohttp
 import logging
 from models import Account, Transaction
@@ -10,7 +12,6 @@ logger = logging.getLogger(__name__)
 
 class FireflyAPIError(Exception):
     """Base exception for Firefly III API errors."""
-    pass
 
 @dataclass
 class PaginatedResponse:
@@ -27,7 +28,7 @@ class FireflyIIIAPI:
         }
         self.session: Optional[aiohttp.ClientSession] = None
 
-    async def __aenter__(self):
+    async def __aenter__(self) -> FireflyIIIAPI:
         self.session = aiohttp.ClientSession(headers=self.headers)
         return self
 
@@ -68,7 +69,7 @@ class FireflyIIIAPI:
         async for page in self._paginate("accounts", params):
             accounts.extend(self._process_account_data(page.data))
 
-        return sorted(accounts, key=lambda x: x.account_id)
+        return sorted(accounts, key=lambda x: x.account_id or 0)
 
     async def list_transactions(self, start: Optional[str] = None, end: Optional[str] = None, transaction_type: Optional[str] = None) -> List[Transaction]:
         params = {"start": start, "end": end, "type": transaction_type}
@@ -77,9 +78,9 @@ class FireflyIIIAPI:
         async for page in self._paginate("transactions", params):
             transactions.extend(self._process_transaction_data(page.data))
 
-        return sorted(transactions, key=lambda x: x.transaction_id)
+        return sorted(transactions, key=lambda x: x.transaction_id or 0)
 
-    async def _paginate(self, endpoint: str, params: Dict[str, Any]):
+    async def _paginate(self, endpoint: str, params: Dict[str, Any]) -> AsyncGenerator[PaginatedResponse, None]:
         page = 1
         while True:
             params["page"] = page
@@ -104,14 +105,17 @@ class FireflyIIIAPI:
         }
 
     def _extract_transaction_attributes(self, item: Dict[str, Any]) -> Dict[str, Any]:
-        attributes = item["attributes"]["transactions"][0]
-        # logger.info(f"Processing transaction: {attributes}")
+        attributes = item.get("attributes", {})
+        if "transactions" in attributes:
+            attributes = attributes["transactions"][0]
         
+        # Ensure date and amount are properly extracted
+        transaction_date = datetime.fromisoformat(attributes['date']).date()
         amount = float(attributes['amount'])
 
         result = {
-            "transaction_id": item["id"],
-            "date": attributes.get('date'),
+            "transaction_id": item.get("id"),
+            "date": transaction_date,
             "amount": amount,
             "type": attributes.get('type'),
             "description": attributes.get('description'),
@@ -125,13 +129,13 @@ class FireflyIIIAPI:
                 result[k] = v
 
         return result
-    
+
     async def store_transaction(self, transaction: Transaction) -> Transaction:
         data = {
             "transactions": [{
                 "type": transaction.type,
-                "date": transaction.date.isoformat() if transaction.date else None,
-                "amount": str(transaction.amount) if transaction.amount is not None else None,
+                "date": transaction.date.isoformat(),
+                "amount": str(transaction.amount),
                 "description": transaction.description,
                 "source_name": transaction.source_name,
                 "destination_name": transaction.destination_name,
@@ -140,7 +144,13 @@ class FireflyIIIAPI:
         # Remove None values
         data["transactions"][0] = {k: v for k, v in data["transactions"][0].items() if v is not None}
         response = await self._make_request("POST", "transactions", json=data)
-        return self._process_transaction_data(response["data"])[0]
+        
+        logger.info(f"Store transaction response: {response}")
+        
+        if isinstance(response["data"], list):
+            return self._process_transaction_data(response["data"])[0]
+        else:
+            return self._process_transaction_data([response["data"]])[0]
 
     async def get_transaction(self, transaction_id: int) -> Transaction:
         response = await self._make_request("GET", f"transactions/{transaction_id}")
@@ -150,8 +160,8 @@ class FireflyIIIAPI:
         data = {
             "transactions": [{
                 "type": transaction.type,
-                "date": transaction.date.isoformat() if transaction.date else None,
-                "amount": str(transaction.amount) if transaction.amount is not None else None,
+                "date": transaction.date.isoformat(),
+                "amount": str(transaction.amount),
                 "description": transaction.description,
                 "source_name": transaction.source_name,
                 "destination_name": transaction.destination_name,

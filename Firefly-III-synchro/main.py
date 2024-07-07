@@ -111,9 +111,9 @@ async def run_bot(config: Config):
                 logger.info(f"Found {len(missing_transactions)} missing transactions.")
 
             tasks = [
-                periodic_task(fetch_and_update, 30 * 60),
-                periodic_task(discord_bot.post_missing_transactions, 10 * 60),
-                periodic_task(discord_bot.check_reaction, 10 * 60),
+                periodic_task(fetch_and_update, 30),
+                periodic_task(discord_bot.post_missing_transactions, 10),
+                periodic_task(discord_bot.check_reaction, 10),
                 discord_bot.start(),
             ]
 
