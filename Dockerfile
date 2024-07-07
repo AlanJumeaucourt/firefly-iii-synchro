@@ -11,7 +11,10 @@ COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code to the container
-COPY Firefly-III-synchro/ /app/
+COPY src/ /app/
+
+# Copy .env file to the container
+COPY .env /app/
 
 # Set the command to run the application
 CMD [ "python3", "main.py" ]
