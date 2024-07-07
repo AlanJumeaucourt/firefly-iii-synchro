@@ -3,6 +3,7 @@ import logging
 import os
 import signal
 from typing import List
+from dataclasses import dataclass
 import math
 
 from dotenv import load_dotenv
@@ -12,35 +13,38 @@ from firefly_api import FireflyIIIAPI
 from models import Transaction
 from discordbot import DiscordBot
 
-# pylint: disable=W1203 # logging format is not a constant string
-
-# Setup logging
-logger = logging.getLogger(__name__)
 from logging_config import setup_logging
 
 setup_logging()
+logger = logging.getLogger(__name__)
 
+@dataclass
+class Config:
+    firefly_api_url: str
+    firefly_api_token: str
+    kresus_api_url: str
+    start_date: str
+    discord_channel_id: str
+    discord_token: str
 
-class ConfigLoader:
-    @staticmethod
-    def __load_env_var(var_name: str) -> str:
-        var = os.getenv(var_name)
-        if var is None:
-            raise EnvironmentError(f"{var_name} environment variable is not set")
-        return var
-
-    @staticmethod
-    def load_config():
+    @classmethod
+    def load(cls):
         load_dotenv()
-        return {
-            "firefly_api_url": ConfigLoader.__load_env_var("FIREFLY_API_URL"),
-            "firefly_api_token": ConfigLoader.__load_env_var("FIREFLY_API_TOKEN"),
-            "kresus_api_url": ConfigLoader.__load_env_var("KRESUS_API_URL"),
-            "start_date": ConfigLoader.__load_env_var("START_DATE"),
-            "discord_channel_id": ConfigLoader.__load_env_var("DISCORD_CHANNEL_ID"),
-            "discord_token": ConfigLoader.__load_env_var("DISCORD_TOKEN"),
-        }
+        return cls(
+            firefly_api_url=cls._load_env_var("FIREFLY_API_URL"),
+            firefly_api_token=cls._load_env_var("FIREFLY_API_TOKEN"),
+            kresus_api_url=cls._load_env_var("KRESUS_API_URL"),
+            start_date=cls._load_env_var("START_DATE"),
+            discord_channel_id=cls._load_env_var("DISCORD_CHANNEL_ID"),
+            discord_token=cls._load_env_var("DISCORD_TOKEN"),
+        )
 
+    @staticmethod
+    def _load_env_var(var_name: str) -> str:
+        value = os.getenv(var_name)
+        if value is None:
+            raise EnvironmentError(f"{var_name} environment variable is not set")
+        return value
 
 def check_kresus_missing_transactions(
     local_transactions: List[Transaction], transactions_list: List[Transaction]
@@ -81,92 +85,49 @@ def check_kresus_missing_transactions(
 
     return missing_transactions
 
-
 async def fetch_missing_transactions(
     kresus_api: Kresus, firefly_api: FireflyIIIAPI, start_date: str
 ) -> List[Transaction]:
-    """
-    Fetches transactions from Kresus and Firefly-III, and identifies missing transactions.
+    kresus_transactions = await kresus_api.list_transactions(start_date)
+    firefly_transactions = await firefly_api.list_transactions(start=start_date)
+    return check_kresus_missing_transactions(kresus_transactions, firefly_transactions)
 
-    Args:
-        kresus_api (Kresus): Instance of the Kresus API client.
-        firefly_api (FireflyIIIAPI): Instance of the Firefly-III API client.
-        start_date (str): The start date to fetch transactions from.
+async def periodic_task(coro, sleep_time: int):
+    while True:
+        try:
+            await coro()
+        except Exception as e:
+            logger.error(f"Error in periodic task: {e}", exc_info=True)
+        await asyncio.sleep(sleep_time)
 
-    Returns:
-        List[Transaction]: List of missing transactions.
-    """
-    kresus_transactions = await asyncio.to_thread(
-        kresus_api.list_transactions, start_date
-    )
-    firefly_transactions = await asyncio.to_thread(firefly_api.list_transactions)
-    missing_transactions = check_kresus_missing_transactions(
-        kresus_transactions, firefly_transactions
-    )
-    return missing_transactions
+async def run_bot(config: Config):
+    async with Kresus(config.kresus_api_url) as kresus_api:
+        async with FireflyIIIAPI(config.firefly_api_url, config.firefly_api_token) as firefly_api:
+            discord_bot = DiscordBot(config.discord_token, int(config.discord_channel_id), firefly_api)
 
-
-async def main() -> None:
-    # Load configuration
-    config = ConfigLoader.load_config()
-    logger.info(f"Configuration loaded: {config}")
-
-    # Initialize APIs and Discord bot
-    kresus_api = Kresus(config["kresus_api_url"])
-    firefly_api = FireflyIIIAPI(config["firefly_api_url"], config["firefly_api_token"])
-    discord_bot = DiscordBot(
-        config["discord_token"], config["discord_channel_id"], firefly_api
-    )
-
-    async def periodic_fetch(sleep_time: int):
-        while True:
-            try:
-                missing_transactions = await fetch_missing_transactions(
-                    kresus_api, firefly_api, config["start_date"]
-                )
+            async def fetch_and_update():
+                missing_transactions = await fetch_missing_transactions(kresus_api, firefly_api, config.start_date)
                 discord_bot.missing_transactions = missing_transactions
                 logger.info(f"Found {len(missing_transactions)} missing transactions.")
-            except Exception as e:
-                logger.error(f"Error fetching missing transactions: {e}")
-            await asyncio.sleep(sleep_time)
 
-    async def periodic_post_missing_transactions(sleep_time: int):
-        while True:
-            try:
-                await discord_bot.post_missing_transactions()
-            except Exception as e:
-                logger.error(f"Error posting missing transactions: {e}")
-            await asyncio.sleep(sleep_time)
+            tasks = [
+                periodic_task(fetch_and_update, 30 * 60),
+                periodic_task(discord_bot.post_missing_transactions, 10 * 60),
+                periodic_task(discord_bot.check_reaction, 10 * 60),
+                discord_bot.start(),
+            ]
 
-    async def check_discord_reaction(sleep_time: int):
-        while True:
-            try:
-                await discord_bot.check_reaction()
-            except Exception as e:
-                logger.error(f"Error checking reactions: {e}")
-            await asyncio.sleep(sleep_time)
+            await asyncio.gather(*tasks)
 
-    async def shutdown(signal, loop):
-        logger.info(f"Received exit signal {signal.name}...")
-        tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
-        logger.info(f"Cancelling {len(tasks)} tasks...")
-        [task.cancel() for task in tasks]
-        await asyncio.gather(*tasks, return_exceptions=True)
-        loop.stop()
+async def main():
+    config = Config.load()
+    logger.info(f"Configuration loaded: {config}")
 
-    loop = asyncio.get_running_loop()
-    signals = (signal.SIGHUP, signal.SIGTERM, signal.SIGINT)
-    for s in signals:
-        loop.add_signal_handler(s, lambda s=s: asyncio.create_task(shutdown(s, loop)))
-
-    asyncio.create_task(periodic_fetch(sleep_time=30*60))
-    asyncio.create_task(periodic_post_missing_transactions(sleep_time=10*60))
-    asyncio.create_task(check_discord_reaction(sleep_time=10*60))
-    await discord_bot.start()
-
+    await run_bot(config)
 
 if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
         logger.info("Program terminated by user.")
+

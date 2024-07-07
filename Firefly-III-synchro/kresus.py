@@ -4,6 +4,7 @@ import requests
 from datetime import datetime
 from models import Account, Transaction
 import inspect
+import aiohttp
 
 logger = logging.getLogger(__name__)
 
@@ -16,13 +17,24 @@ class Kresus:
         logger.info("Kresus instance created")
         self.api_url = api_url
 
-    def get_all_kresus(self):
+    async def __aenter__(self):
+        self.session = aiohttp.ClientSession()
+        return self
+    
+    async def __aexit__(self, exc_type, exc, tb):
+        await self.session.close()
+    
+    async def get_all_kresus(self):
         function_name = inspect.currentframe().f_code.co_name
-        response = requests.get(self.api_url)
 
-        if response.status_code == 200:
-            logger.info("Request of all kresus data successfull")
-            self.data = response.json()
+        async with self.session.get(self.api_url) as response:
+            if response.status == 200:
+                logger.info("Request of all kresus data successful")
+                self.data = await response.json()
+            else:
+                logger.error(f"{function_name} : Request failed with status code {response.status}")
+                raise Exception(f"{function_name} : Request failed with status code {response.status}")
+
 
             # self.data format of list from kresus :
             # [{
@@ -42,13 +54,6 @@ class Kresus:
             #     "label": "Prêt etudiant",
             # }]
 
-        else:
-            logger.error(
-                f"{function_name} : Request failed with status code {response.status_code}"
-            )
-            raise Exception(
-                f"{function_name} : Request failed with status code {response.status_code}"
-            )
 
     def parse_account(self):
         csv_accounts: list[str] = [
@@ -217,9 +222,20 @@ class Kresus:
 
                         break
 
-    def list_transactions(self, start_date) -> List[Transaction]:
-        self.get_all_kresus()
+    async def list_transactions(self, start_date) -> List[Transaction]:
+        await self.get_all_kresus()
         self.parse_account()
         self.parse_transactions(start_date)
         self.reconciliate_transaction()
         return self.transaction_list
+
+# Usage example:
+async def main():
+    async with Kresus("https://your-kresus-instance.com/api") as kresus:
+        transactions = await kresus.list_transactions("2023-01-01")
+        for transaction in transactions:
+            print(transaction)
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())

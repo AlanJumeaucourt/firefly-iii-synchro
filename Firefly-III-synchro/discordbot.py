@@ -130,7 +130,7 @@ class DiscordBot:
 
     async def add_missing_transaction(self, transaction: Transaction):
         logger.info(f"Adding transaction {transaction} to Firefly-III...")
-        self.firefly_api.put_transaction(transaction)
+        await self.firefly_api.store_transaction(transaction)
         logger.info(f"Transaction {transaction} added to Firefly-III.")
 
     def find_transaction_from_message(self, message: Message) -> Transaction:
