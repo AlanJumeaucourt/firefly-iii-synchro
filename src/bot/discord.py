@@ -88,9 +88,10 @@ class DiscordBot:
 
     async def process_transaction(self, message: Message, transaction: Transaction):
         try:
-            await self.add_missing_transaction(transaction)
+            transaction_added = await self.add_missing_transaction(transaction)
             new_embed = discord.Embed.from_dict(message.embeds[0].to_dict())
             new_embed.title = "Transaction added"
+            new_embed.add_field(name="Link", value=f"{self.firefly_api.api_url.replace('/api/v1', '')}/transactions/show/{transaction_added.transaction_id}", inline=False)
             new_embed.colour = discord.Colour.green()
             await message.edit(embed=new_embed)
             await message.add_reaction("✅")
@@ -128,10 +129,11 @@ class DiscordBot:
             else:
                 logger.info(f"Transaction {transaction} already posted.")
 
-    async def add_missing_transaction(self, transaction: Transaction):
+    async def add_missing_transaction(self, transaction: Transaction) -> Transaction:
         logger.info(f"Adding transaction {transaction} to Firefly-III...")
-        await self.firefly_api.store_transaction(transaction)
+        transaction_added = await self.firefly_api.store_transaction(transaction)
         logger.info(f"Transaction {transaction} added to Firefly-III.")
+        return transaction_added
 
     def find_transaction_from_message(self, message: Message) -> Optional[Transaction]:
         for field in message.embeds[0].fields:
