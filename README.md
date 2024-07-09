@@ -26,5 +26,5 @@ The tool's main module orchestrates various components, including API interactio
 ## Getting Started
 
 1. Clone the repository.
-1. Set up your .env file with necessary API keys and endpoints.
+1. Set up your .env file with necessary API keys and endpoints. (.env.template is here to help you so)
 1. build and lauch the container `docker build --pull --rm -f "Dockerfile" -t fireflyiiisynchro:latest "." && docker run -it fireflyiiisynchro`
