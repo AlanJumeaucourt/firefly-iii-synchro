@@ -66,7 +66,7 @@ class FireflyIIIAPI:
     async def get_about_info(self) -> Dict[str, Any]:
         return await self._make_request("GET", "about")
 
-    async def _get_paginated_data(
+    async def _fetch_single_page_data(
         self, endpoint: str, params: Dict[str, Any]
     ) -> PaginatedResponse:
         response = await self._make_request("GET", endpoint, params=params)
@@ -81,8 +81,8 @@ class FireflyIIIAPI:
         params = {"date": date, "type": account_type}
         accounts = []
 
-        async for page in self._paginate("accounts", params):
-            accounts.extend(self._process_account_data(page.data))
+        async for page in self._iterate_all_pages("accounts", params):
+            accounts.extend(self._convert_raw_data_to_accounts(page.data))
 
         return sorted(accounts, key=lambda x: x.account_id or 0)
 
@@ -95,34 +95,34 @@ class FireflyIIIAPI:
         params = {"start": start, "end": end, "type": transaction_type}
         transactions = []
 
-        async for page in self._paginate("transactions", params):
-            transactions.extend(self._process_transaction_data(page.data))
+        async for page in self._iterate_all_pages("transactions", params):
+            transactions.extend(self._convert_raw_data_to_transactions(page.data))
 
         return sorted(transactions, key=lambda x: x.transaction_id or 0)
 
-    async def _paginate(
+    async def _iterate_all_pages(
         self, endpoint: str, params: Dict[str, Any]
     ) -> AsyncGenerator[PaginatedResponse, None]:
         page = 1
         while True:
             params["page"] = page
-            response = await self._get_paginated_data(endpoint, params)
+            response = await self._fetch_single_page_data(endpoint, params)
             yield response
             if page >= response.total_pages:
                 break
             page += 1
 
-    def _process_account_data(self, data: List[Dict[str, Any]]) -> List[Account]:
-        return [Account(**self._extract_account_attributes(item)) for item in data]
+    def _convert_raw_data_to_accounts(self, data: List[Dict[str, Any]]) -> List[Account]:
+        return [Account(**self._map_api_response_to_account_fields(item)) for item in data]
 
-    def _process_transaction_data(
+    def _convert_raw_data_to_transactions(
         self, data: List[Dict[str, Any]]
     ) -> List[Transaction]:
         return [
-            Transaction(**self._extract_transaction_attributes(item)) for item in data
+            Transaction(**self._map_api_response_to_transaction_fields(item)) for item in data
         ]
 
-    def _extract_account_attributes(self, item: Dict[str, Any]) -> Dict[str, Any]:
+    def _map_api_response_to_account_fields(self, item: Dict[str, Any]) -> Dict[str, Any]:
         attributes = item["attributes"]
         return {
             "account_id": item["id"],
@@ -134,7 +134,7 @@ class FireflyIIIAPI:
             },
         }
 
-    def _extract_transaction_attributes(self, item: Dict[str, Any]) -> Dict[str, Any]:
+    def _map_api_response_to_transaction_fields(self, item: Dict[str, Any]) -> Dict[str, Any]:
         attributes = item.get("attributes", {})
         if "transactions" in attributes:
             attributes = attributes["transactions"][0]
@@ -182,13 +182,13 @@ class FireflyIIIAPI:
         logger.info(f"Store transaction response: {response}")
 
         if isinstance(response["data"], list):
-            return self._process_transaction_data(response["data"])[0]
+            return self._convert_raw_data_to_transactions(response["data"])[0]
         else:
-            return self._process_transaction_data([response["data"]])[0]
+            return self._convert_raw_data_to_transactions([response["data"]])[0]
 
     async def get_transaction(self, transaction_id: int) -> Transaction:
         response = await self._make_request("GET", f"transactions/{transaction_id}")
-        return self._process_transaction_data(response["data"])[0]
+        return self._convert_raw_data_to_transactions(response["data"])[0]
 
     async def update_transaction(self, transaction: Transaction) -> Transaction:
         data = {
@@ -210,7 +210,7 @@ class FireflyIIIAPI:
         response = await self._make_request(
             "PUT", f"transactions/{transaction.transaction_id}", json=data
         )
-        return self._process_transaction_data(response["data"])[0]
+        return self._convert_raw_data_to_transactions(response["data"])[0]
 
     async def delete_transaction(self, transaction_id: int) -> None:
         await self._make_request("DELETE", f"transactions/{transaction_id}")
