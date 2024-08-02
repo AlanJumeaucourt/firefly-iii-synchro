@@ -138,6 +138,9 @@ class Kresus:
     def reconcile_transactions(self) -> None:
         reconciled_transactions = []
         for i, transaction in enumerate(self.transactions):
+            if not transaction:
+                break
+
             if transaction.type == "withdrawal":
                 for j, potential_match in enumerate(
                     self.transactions[i + 1 :], start=i + 1
