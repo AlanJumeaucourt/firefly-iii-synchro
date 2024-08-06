@@ -3,7 +3,7 @@ import logging
 from typing import List, Optional
 from discord.ext import commands
 import discord
-from discord import Intents, Message, User, TextChannel, Embed, Member
+from discord import Intents, Message, User, TextChannel, Embed, Member, Colour
 from models import Transaction
 import json
 import hashlib
@@ -89,10 +89,15 @@ class DiscordBot:
     async def process_transaction(self, message: Message, transaction: Transaction):
         try:
             transaction_added = await self.add_missing_transaction(transaction)
-            new_embed = discord.Embed.from_dict(message.embeds[0].to_dict())
-            new_embed.title = "Transaction added"
+            actual_embed = message.embeds[0].to_dict()
+            sha256_field = None
+            for field in actual_embed['fields']:
+                if field["name"] == "Sha256":
+                    sha256_field = field["value"]
+                    break
+
+            new_embed = self.format_transaction_embedded(transaction_added, "Transaction added", discord.Colour.green(), sha256_field)
             new_embed.add_field(name="Link", value=f"{self.firefly_api.api_url.replace('/api/v1', '')}/transactions/show/{transaction_added.transaction_id}", inline=False)
-            new_embed.colour = discord.Colour.green()
             await message.edit(embed=new_embed)
             await message.add_reaction("✅")
         except Exception as e:
@@ -123,7 +128,7 @@ class DiscordBot:
             if not await self.is_transaction_posted(
                 self.channel, self.sha256_transaction(transaction)
             ):
-                embed = self.format_transaction_embedded(transaction)
+                embed = self.format_transaction_embedded(transaction, "Missing transaction", discord.Colour.orange())
                 message = await self.channel.send(embed=embed)
                 await message.add_reaction("➕")
             else:
@@ -177,11 +182,11 @@ class DiscordBot:
         return False
 
     @staticmethod
-    def format_transaction_embedded(transaction: Transaction) -> Embed:
-        embed = Embed(title="Missing transaction", color=discord.Colour.orange())
+    def format_transaction_embedded(transaction: Transaction, title: str, color: Colour, sha_256: str = None) -> Embed:
+        embed = Embed(title=title, color=color)
         embed.add_field(
             name="Sha256",
-            value=DiscordBot.sha256_transaction(transaction),
+            value=sha_256 if sha_256 else DiscordBot.sha256_transaction(transaction),
             inline=False,
         )
         embed.add_field(name="Date", value=transaction.date, inline=False)
