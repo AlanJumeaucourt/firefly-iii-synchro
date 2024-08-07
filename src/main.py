@@ -2,8 +2,8 @@ import asyncio
 import logging
 import os
 from typing import List
-from dataclasses import dataclass
 
+from dataclasses import dataclass, field
 from dotenv import load_dotenv
 
 from api import Kresus, FireflyIIIAPI
@@ -52,12 +52,13 @@ async def fetch_missing_transactions(
     return check_kresus_missing_transactions(kresus_transactions, firefly_transactions)
 
 
-async def periodic_task(coro, sleep_time: int):
+async def periodic_task(coro, sleep_time: int, name: str = None):
     while True:
         try:
             await coro()
+            logger.info(f"Task '{name or coro.__name__}' completed successfully.")
         except Exception as e:
-            logger.error(f"Error in periodic task: {e}", exc_info=True)
+            logger.error(f"Error in task '{name or coro.__name__}': {e}", exc_info=True)
         await asyncio.sleep(sleep_time)
 
 
